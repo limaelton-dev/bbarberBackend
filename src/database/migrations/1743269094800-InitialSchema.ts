@@ -9,33 +9,33 @@ export class InitialSchema1743269094800 implements MigrationInterface {
             CREATE TYPE day_of_week AS ENUM ('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday');
 
             CREATE TABLE "user" (
-            id SERIAL PRIMARY KEY,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            created_at TIMESTAMPTZ DEFAULT now(),
-            updated_at TIMESTAMPTZ DEFAULT now()
+                id SERIAL PRIMARY KEY,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                created_at TIMESTAMPTZ DEFAULT now(),
+                updated_at TIMESTAMPTZ DEFAULT now()
             );
 
             -- Profiles table
             CREATE TABLE profile (
-            id SERIAL PRIMARY KEY,
-            user_id INTEGER NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-            type profile_type NOT NULL,
-            full_name TEXT NOT NULL,
-            avatar_url TEXT,
-            created_at TIMESTAMPTZ DEFAULT now(),
-            updated_at TIMESTAMPTZ DEFAULT now()
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+                type profile_type NOT NULL,
+                full_name TEXT NOT NULL,
+                avatar_url TEXT,
+                created_at TIMESTAMPTZ DEFAULT now(),
+                updated_at TIMESTAMPTZ DEFAULT now()
             );
 
             -- Barbershops table
             CREATE TABLE barbershop (
-            id SERIAL PRIMARY KEY,
-            profile_id INTEGER NOT NULL REFERENCES profile(id) ON DELETE CASCADE,
-            name TEXT NOT NULL,
-            description TEXT,
-            logo_url TEXT,
-            created_at TIMESTAMPTZ DEFAULT now(),
-            updated_at TIMESTAMPTZ DEFAULT now()
+                id SERIAL PRIMARY KEY,
+                profile_id INTEGER NOT NULL REFERENCES profile(id) ON DELETE CASCADE,
+                name TEXT NOT NULL,
+                description TEXT,
+                logo_url TEXT,
+                created_at TIMESTAMPTZ DEFAULT now(),
+                updated_at TIMESTAMPTZ DEFAULT now()
             );
 
             CREATE TABLE barbershop_enterprise (
@@ -50,22 +50,22 @@ export class InitialSchema1743269094800 implements MigrationInterface {
 
             -- Addresses table
             CREATE TABLE address (
-            id SERIAL PRIMARY KEY,    
-            barbershop_id INTEGER REFERENCES barbershop(id) ON DELETE CASCADE,
-            profile_id INTEGER REFERENCES profile(id) ON DELETE CASCADE,
-            street TEXT NOT NULL,
-            number TEXT NOT NULL,
-            complement TEXT,
-            district TEXT NOT NULL,
-            city TEXT NOT NULL,
-            state TEXT NOT NULL,
-            postal_code TEXT NOT NULL,
-            created_at TIMESTAMPTZ DEFAULT now(),
-            updated_at TIMESTAMPTZ DEFAULT now(),
-            CONSTRAINT address_owner CHECK (
-                (barbershop_id IS NOT NULL AND profile_id IS NULL) OR
-                (barbershop_id IS NULL AND profile_id IS NOT NULL)
-            )
+                id SERIAL PRIMARY KEY,    
+                barbershop_id INTEGER REFERENCES barbershop(id) ON DELETE CASCADE,
+                profile_id INTEGER REFERENCES profile(id) ON DELETE CASCADE,
+                street TEXT NOT NULL,
+                number TEXT NOT NULL,
+                complement TEXT,
+                district TEXT NOT NULL,
+                city TEXT NOT NULL,
+                state TEXT NOT NULL,
+                postal_code TEXT NOT NULL,
+                created_at TIMESTAMPTZ DEFAULT now(),
+                updated_at TIMESTAMPTZ DEFAULT now(),
+                CONSTRAINT address_owner CHECK (
+                    (barbershop_id IS NOT NULL AND profile_id IS NULL) OR
+                    (barbershop_id IS NULL AND profile_id IS NOT NULL)
+                )
             );
 
             -- Phones table
@@ -85,47 +85,47 @@ export class InitialSchema1743269094800 implements MigrationInterface {
 
             -- Services table
             CREATE TABLE service (
-            id SERIAL PRIMARY KEY,
-            barbershop_id INTEGER NOT NULL REFERENCES barbershop(id) ON DELETE CASCADE,
-            name TEXT NOT NULL,
-            description TEXT,
-            price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
-            duration INTEGER NOT NULL CHECK (duration > 0), -- in minutes
-            is_active BOOLEAN DEFAULT true,
-            created_at TIMESTAMPTZ DEFAULT now(),
-            updated_at TIMESTAMPTZ DEFAULT now()
+                id SERIAL PRIMARY KEY,
+                barbershop_id INTEGER NOT NULL REFERENCES barbershop(id) ON DELETE CASCADE,
+                name TEXT NOT NULL,
+                description TEXT,
+                price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
+                duration INTEGER NOT NULL CHECK (duration > 0), -- in minutes
+                is_active BOOLEAN DEFAULT true,
+                created_at TIMESTAMPTZ DEFAULT now(),
+                updated_at TIMESTAMPTZ DEFAULT now()
             );
 
             -- Products table
             CREATE TABLE product (
-            id SERIAL PRIMARY KEY,
-            barbershop_id INTEGER NOT NULL REFERENCES barbershop(id) ON DELETE CASCADE,
-            name TEXT NOT NULL,
-            description TEXT,
-            price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
-            cost_price DECIMAL(10,2) NOT NULL CHECK (cost_price >= 0),
-            image_url TEXT,
-            is_active BOOLEAN DEFAULT true,
-            created_at TIMESTAMPTZ DEFAULT now(),
-            updated_at TIMESTAMPTZ DEFAULT now()
+                id SERIAL PRIMARY KEY,
+                barbershop_id INTEGER NOT NULL REFERENCES barbershop(id) ON DELETE CASCADE,
+                name TEXT NOT NULL,
+                description TEXT,
+                price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
+                cost_price DECIMAL(10,2) NOT NULL CHECK (cost_price >= 0),
+                image_url TEXT,
+                is_active BOOLEAN DEFAULT true,
+                created_at TIMESTAMPTZ DEFAULT now(),
+                updated_at TIMESTAMPTZ DEFAULT now()
             );
 
             -- Employees table
             CREATE TABLE employee (
-            id SERIAL PRIMARY KEY,
-            barbershop_id INTEGER NOT NULL REFERENCES barbershop(id) ON DELETE CASCADE,
-            commission_rate DECIMAL(5,2) CHECK (commission_rate >= 0 AND commission_rate <= 100), -- percentage
-            base_salary DECIMAL(10,2) CHECK (base_salary >= 0),
-            is_active BOOLEAN DEFAULT true,
-            created_at TIMESTAMPTZ DEFAULT now(),
-            updated_at TIMESTAMPTZ DEFAULT now()
+                id SERIAL PRIMARY KEY,
+                barbershop_id INTEGER NOT NULL REFERENCES barbershop(id) ON DELETE CASCADE,
+                commission_rate DECIMAL(5,2) CHECK (commission_rate >= 0 AND commission_rate <= 100), -- percentage
+                base_salary DECIMAL(10,2) CHECK (base_salary >= 0),
+                is_active BOOLEAN DEFAULT true,
+                created_at TIMESTAMPTZ DEFAULT now(),
+                updated_at TIMESTAMPTZ DEFAULT now()
             );
 
             -- Employee Service (junction table)
             CREATE TABLE employee_service (
-            employee_id INTEGER REFERENCES employee(id) ON DELETE CASCADE,
-            service_id INTEGER REFERENCES service(id) ON DELETE CASCADE,
-            PRIMARY KEY (employee_id, service_id)
+                employee_id INTEGER REFERENCES employee(id) ON DELETE CASCADE,
+                service_id INTEGER REFERENCES service(id) ON DELETE CASCADE,
+                PRIMARY KEY (employee_id, service_id)
             );
 
             CREATE TABLE working_hours (
@@ -147,19 +147,19 @@ export class InitialSchema1743269094800 implements MigrationInterface {
 
             -- Appointments table
             CREATE TABLE appointment (
-            id SERIAL PRIMARY KEY,
-            barbershop_id INTEGER NOT NULL REFERENCES barbershop(id) ON DELETE CASCADE,
-            client_id INTEGER NOT NULL REFERENCES profile(id),
-            employee_id INTEGER NOT NULL REFERENCES employee(id),
-            date DATE NOT NULL,
-            start_time TIME NOT NULL,
-            end_time TIME NOT NULL,
-            status appointment_status DEFAULT 'pending',
-            total_price DECIMAL(10,2) NOT NULL CHECK (total_price >= 0),
-            notes TEXT,
-            created_at TIMESTAMPTZ DEFAULT now(),
-            updated_at TIMESTAMPTZ DEFAULT now(),
-            CONSTRAINT valid_appointment_time CHECK (end_time > start_time)
+                id SERIAL PRIMARY KEY,
+                barbershop_id INTEGER NOT NULL REFERENCES barbershop(id) ON DELETE CASCADE,
+                client_id INTEGER NOT NULL REFERENCES profile(id),
+                employee_id INTEGER NOT NULL REFERENCES employee(id),
+                date DATE NOT NULL,
+                start_time TIME NOT NULL,
+                end_time TIME NOT NULL,
+                status appointment_status DEFAULT 'pending',
+                total_price DECIMAL(10,2) NOT NULL CHECK (total_price >= 0),
+                notes TEXT,
+                created_at TIMESTAMPTZ DEFAULT now(),
+                updated_at TIMESTAMPTZ DEFAULT now(),
+                CONSTRAINT valid_appointment_time CHECK (end_time > start_time)
             );
 
             CREATE TABLE appointment_product (
@@ -177,14 +177,14 @@ export class InitialSchema1743269094800 implements MigrationInterface {
 
             -- Reviews table
             CREATE TABLE review (
-            id SERIAL PRIMARY KEY,
-            barbershop_id INTEGER NOT NULL REFERENCES barbershop(id) ON DELETE CASCADE,
-            client_id INTEGER NOT NULL REFERENCES profile(id),
-            appointment_id INTEGER REFERENCES appointment(id),
-            rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
-            comment TEXT,
-            created_at TIMESTAMPTZ DEFAULT now(),
-            updated_at TIMESTAMPTZ DEFAULT now()
+                id SERIAL PRIMARY KEY,
+                barbershop_id INTEGER NOT NULL REFERENCES barbershop(id) ON DELETE CASCADE,
+                client_id INTEGER NOT NULL REFERENCES profile(id),
+                appointment_id INTEGER REFERENCES appointment(id),
+                rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+                comment TEXT,
+                created_at TIMESTAMPTZ DEFAULT now(),
+                updated_at TIMESTAMPTZ DEFAULT now()
             );
 
             -- Create indexes

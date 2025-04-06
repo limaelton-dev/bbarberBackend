@@ -13,7 +13,7 @@ import { UserService } from "./services/user.service";
         UserController
     ],
     providers: [
-        UserRepository
+        UserRepository, UserService
     ],
     exports: [
         UserRepository, UserService

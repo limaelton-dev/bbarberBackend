@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity } from 'typeorm';
+import { Column, Entity } from 'typeorm';
+import { BaseEntity } from '../../../shared/base/base.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -7,5 +8,4 @@ export class UserEntity extends BaseEntity {
 
     @Column({})
     password: string;
-
 }

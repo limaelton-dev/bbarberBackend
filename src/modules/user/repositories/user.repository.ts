@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Repository } from "typeorm";
+import { Repository, FindOneOptions } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "../entities/user.entity";
 
@@ -9,4 +9,12 @@ export class UserRepository{
         @InjectRepository(UserEntity)
         private readonly userRpository: Repository<UserEntity>,
     ) {}
+
+    async findById(id: number): Promise<UserEntity | null> {
+        return this.userRpository.findOne({ where: { id } });
+    }
+
+    async findOne(options: FindOneOptions<UserEntity>): Promise<UserEntity | null> {
+        return this.userRpository.findOne(options);
+    }
 }
